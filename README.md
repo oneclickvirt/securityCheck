@@ -35,3 +35,11 @@ curl https://cdn.spiritlhl.net/https://raw.githubusercontent.com/oneclickvirt/se
 - [x] use valid DNS blacklist for query, each query from [multirbl.valli.org](https://multirbl.valli.org/list/) automatically get the blacklist query address (including mailbox detection)
 - [x] Use concurrent query, the overall query will not exceed 15 seconds at most
 - [x] support all major architectures and mainstream system queries
+
+# 致谢
+
+感谢 [ipinfo.io](https://ipinfo.io) [ip.sb](https://ip.sb) [cheervision.co](https://cheervision.co) [ipip.net](https://en.ipip.net) [cip.cc](http://www.cip.cc) [scamalytics.com](https://scamalytics.com) [abuseipdb.com](https://www.abuseipdb.com/) [virustotal.com](https://www.virustotal.com/) [ip2location.com](ip2location.com/) [ip-api.com](https://ip-api.com) [ipregistry.co](https://ipregistry.co/) [ipdata.co](https://ipdata.co/) [ipgeolocation.io](https://ipgeolocation.io) [ipwhois.io](https://ipwhois.io) [ipapi.com](https://ipapi.com/) [ipapi.is](https://ipapi.is/) 等网站提供的API进行检测，感谢互联网各网站提供的查询资源
+
+# Thanks
+
+Thanks [ipinfo.io](https://ipinfo.io) [ip.sb](https://ip.sb) [cheervision.co](https://cheervision.co) [ipip.net](https://en.ipip.net) [cip.cc](http://www.cip.cc) [scamalytics.com](https://scamalytics.com) [abuseipdb.com](https://www.abuseipdb.com/) [virustotal.com](https://www.virustotal.com/) [ip2location.com](ip2location.com/) [ip-api.com](https://ip-api.com) [ipregistry.co](https://ipregistry.co/) [ipdata.co](https://ipdata.co/) [ipgeolocation.io](https://ipgeolocation.io) [ipwhois.io](https://ipwhois.io) [ipapi.com](https://ipapi.com/) [ipapi.is](https://ipapi.is/) [abstractapi.com](https://abstractapi.com/) [ipqualityscore.com](https://www.ipqualityscore.com/) and so on. They provide APIs for testing, thanks to the query resources provided by various sites on the Internet.
