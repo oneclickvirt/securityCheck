@@ -30,9 +30,9 @@ curl https://cdn.spiritlhl.net/https://raw.githubusercontent.com/oneclickvirt/se
 
 ## 截图
 
-![图片](https://github.com/oneclickvirt/securityCheck/assets/103393591/4d049fc6-f54d-4e92-b6d5-3d496050ce63)
+![图片](https://github.com/oneclickvirt/securityCheck/assets/103393591/cd5d215b-2b67-486f-865f-c3e0d526aa34)
 
-![图片](https://github.com/oneclickvirt/securityCheck/assets/103393591/cc1e6a8a-0d3f-40aa-b850-7968774c2889)
+![图片](https://github.com/oneclickvirt/securityCheck/assets/103393591/ddf338f2-b82c-41be-b159-0b930b0f2797)
 
 ## Information
 
@@ -46,7 +46,7 @@ curl https://cdn.spiritlhl.net/https://raw.githubusercontent.com/oneclickvirt/se
 
 # 致谢
 
-感谢 [ipinfo.io](https://ipinfo.io) [ip.sb](https://ip.sb) [cheervision.co](https://cheervision.co) [ipip.net](https://en.ipip.net) [cip.cc](http://www.cip.cc) [scamalytics.com](https://scamalytics.com) [abuseipdb.com](https://www.abuseipdb.com/) [virustotal.com](https://www.virustotal.com/) [ip2location.com](ip2location.com/) [ip-api.com](https://ip-api.com) [ipregistry.co](https://ipregistry.co/) [ipdata.co](https://ipdata.co/) [ipgeolocation.io](https://ipgeolocation.io) [ipwhois.io](https://ipwhois.io) [ipapi.com](https://ipapi.com/) [ipapi.is](https://ipapi.is/) 等网站提供的API进行检测，感谢互联网各网站提供的查询资源
+感谢 [ipinfo.io](https://ipinfo.io) [ip.sb](https://ip.sb) [cheervision.co](https://cheervision.co) [ipip.net](https://en.ipip.net) [cip.cc](http://www.cip.cc) [scamalytics.com](https://scamalytics.com) [abuseipdb.com](https://www.abuseipdb.com/) [virustotal.com](https://www.virustotal.com/) [ip2location.com](ip2location.com/) [ip-api.com](https://ip-api.com) [ipregistry.co](https://ipregistry.co/) [ipdata.co](https://ipdata.co/) [ipgeolocation.io](https://ipgeolocation.io) [ipwhois.io](https://ipwhois.io) [ipapi.com](https://ipapi.com/) [ipapi.is](https://ipapi.is/) [abstractapi.com](https://abstractapi.com/) [ipqualityscore.com](https://www.ipqualityscore.com/) 等网站提供的API进行检测，感谢互联网各网站提供的查询资源
 
 # Thanks
 
