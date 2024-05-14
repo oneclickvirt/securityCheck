@@ -23,16 +23,22 @@ curl https://cdn.spiritlhl.net/https://raw.githubusercontent.com/oneclickvirt/se
 - [x] 支持双语输出，以```-l```指定输出类型为```en```或```zh```，默认不指定时中文输出
 - [x] 支持双栈检测，以```-c```指定检测的**本机IP类型**为```both```或```ipv4```或```ipv6```，默认不指定时检测双栈(IPV4和IPV6都检测)
 - [x] 支持15个IP相关数据库进行检测，由于检测可能过于火爆，不开源源码，仅提供编译后的文件
-- [x] 使用有效的DNS黑名单进行查询，每次查询都从[multirbl.valli.org](https://multirbl.valli.org/list/)自动获取黑名单查询地址(含邮箱检测)
+- [x] 使用有效的DNS黑名单进行查询(大概300多个有效网站)，每次查询都从[multirbl.valli.org](https://multirbl.valli.org/list/)自动获取黑名单查询地址(含邮箱检测)
 - [x] 使用并发查询，整体查询最多不超过15秒
 - [x] 支持所有主流架构和主流系统查询
+
+## 截图
+
+![图片](https://github.com/oneclickvirt/securityCheck/assets/103393591/4d049fc6-f54d-4e92-b6d5-3d496050ce63)
+
+![图片](https://github.com/oneclickvirt/securityCheck/assets/103393591/cc1e6a8a-0d3f-40aa-b850-7968774c2889)
 
 ## Information
 
 - [x] Support bilingual output, use ```-l``` to specify the output type as ```en``` or ```zh```, default is no Chinese output.
 - [x] Support double-stack detection, use ```-c``` to specify the detected **local IP type** as ```both``` or ```ipv4``` or ```ipv6```, detect double-stack (both IPV4 and IPV6) when not specified by default.
 - [x] support 15 IP-related databases for detection, due to the detection may be too hot, not open source source code, only provide compiled files
-- [x] use valid DNS blacklist for query, each query from [multirbl.valli.org](https://multirbl.valli.org/list/) automatically get the blacklist query address (including mailbox detection)
+- [x] use valid DNS blacklist for query(About 300 active website), each query from [multirbl.valli.org](https://multirbl.valli.org/list/) automatically get the blacklist query address (including mailbox detection)
 - [x] Use concurrent query, the overall query will not exceed 15 seconds at most
 - [x] support all major architectures and mainstream system queries
 
