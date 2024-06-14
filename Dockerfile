@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM alpine:latest AS builder
+FROM multiarch/alpine:latest AS builder
 RUN apk add --no-cache \
     wget \
     curl \
@@ -8,8 +8,10 @@ RUN apk add --no-cache \
 ENV GITHUB_URL="https://github.com/oneclickvirt/securityCheck/releases/download/output"
 COPY <<EOF /download_script.sh
 #!/bin/bash
+
 arch=$(uname -m)
 os=$(uname -s)
+
 get_architecture_url() {
   case $arch in
     "x86_64" | "amd64" | "x64") echo "$GITHUB_URL/securityCheck-linux-amd64" ;;
@@ -29,7 +31,7 @@ get_architecture_url() {
 wget -O /securityCheck $(get_architecture_url)
 EOF
 RUN chmod +x /download_script.sh && /download_script.sh
-FROM alpine:latest
+FROM multiarch/alpine:latest
 COPY --from=builder /securityCheck /usr/local/bin/securityCheck
 RUN chmod +x /usr/local/bin/securityCheck
 ENTRYPOINT ["/usr/local/bin/securityCheck"]
