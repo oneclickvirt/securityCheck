@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM multiarch/alpine:latest AS builder
+FROM alpine:latest AS builder
 RUN apk add --no-cache \
     wget \
     curl \
@@ -31,7 +31,7 @@ get_architecture_url() {
 wget -O /securityCheck $(get_architecture_url)
 EOF
 RUN chmod +x /download_script.sh && /download_script.sh
-FROM multiarch/alpine:latest
+FROM alpine:latest
 COPY --from=builder /securityCheck /usr/local/bin/securityCheck
 RUN chmod +x /usr/local/bin/securityCheck
 ENTRYPOINT ["/usr/local/bin/securityCheck"]
