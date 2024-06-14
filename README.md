@@ -20,6 +20,12 @@ curl https://cdn.spiritlhl.net/https://raw.githubusercontent.com/oneclickvirt/se
 
 无环境依赖，理论上适配所有系统和主流架构，更多架构请查看 https://github.com/oneclickvirt/securityCheck/releases/tag/output
 
+或使用docker容器执行
+
+```
+docker run --rm spiritlhl/security-check:latest
+```
+
 ## 说明
 
 - [x] 支持双语输出，以```-l```指定输出类型为```en```或```zh```，默认不指定时中文输出
