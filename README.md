@@ -36,6 +36,20 @@ docker run --rm spiritlhl/security-check:latest
 - [x] 使用并发查询，整体查询最多不超过15秒
 - [x] 支持所有主流架构和主流系统查询
 
+```
+Usage: ./securityCheck [options]
+  -c string
+        Specific chcek type (both or ipv4 or ipv6, default use both)
+  -e string
+        Enable print IP Info (yes or no, default not to print)
+  -h    Show help information
+  -l string
+        Language parameter (en or zh, default use zh)
+  -log
+        Enable logging
+  -v    show version
+```
+
 ## 截图
 
 ![图片](https://github.com/oneclickvirt/securityCheck/assets/103393591/cd5d215b-2b67-486f-865f-c3e0d526aa34)
