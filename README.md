@@ -8,6 +8,8 @@ IP Quality Inspection - Security Check
 
 ## 使用-Usage
 
+相关参考指标见：https://github.com/oneclickvirt/ecs/blob/master/README_NEW_USER.md#ip%E8%B4%A8%E9%87%8F%E6%A3%80%E6%B5%8B
+
 ```
 curl https://raw.githubusercontent.com/oneclickvirt/securityCheck/main/sc_install.sh -sSf | bash
 ```
@@ -31,7 +33,7 @@ docker run --rm spiritlhl/security-check:latest
 - [x] 支持双语输出，以```-l```指定输出类型为```en```或```zh```，默认不指定时中文输出
 - [x] 支持双栈检测，以```-c```指定检测的**本机IP类型**为```both```或```ipv4```或```ipv6```，默认不指定时检测双栈(IPV4和IPV6都检测)
 - [x] 支持同时输出查询到的IP的ASN和地区信息，以```-e```指定```yes```或```no```，默认不指定时不打印IP的ASN和地区信息 
-- [x] 支持15个IP相关数据库进行检测，由于检测可能过于火爆，不开源源码，仅提供编译后的文件
+- [x] 支持18个IP相关数据库进行检测，由于检测可能过于火爆，不开源源码，仅提供编译后的文件
 - [x] 使用有效的DNS黑名单进行查询(大概300多个有效网站)，每次查询都从[multirbl.valli.org](https://multirbl.valli.org/list/)自动获取黑名单查询地址(含邮箱检测)
 - [x] 使用并发查询，整体查询最多不超过15秒
 - [x] 支持所有主流架构和主流系统查询
@@ -66,10 +68,4 @@ Usage: ./securityCheck [options]
 - [x] Use concurrent query, the overall query will not exceed 15 seconds at most
 - [x] support all major architectures and mainstream system queries
 
-# 致谢
-
-感谢 [he.net](https://he.net) [bgp.tools](https://bgp.tools) [ipinfo.io](https://ipinfo.io) [ip.sb](https://ip.sb) [cheervision.co](https://cheervision.co) [scamalytics.com](https://scamalytics.com) [abuseipdb.com](https://www.abuseipdb.com/) [virustotal.com](https://www.virustotal.com/) [ip2location.com](https://ip2location.com/) [ip-api.com](https://ip-api.com) [ipregistry.co](https://ipregistry.co/) [ipdata.co](https://ipdata.co/) [ipgeolocation.io](https://ipgeolocation.io) [ipwhois.io](https://ipwhois.io) [ipapi.com](https://ipapi.com/) [ipapi.is](https://ipapi.is/) [ipqualityscore.com](https://www.ipqualityscore.com/) [bigdatacloud.com](https://www.bigdatacloud.com/) 等网站提供的API进行检测，感谢互联网各网站提供的查询资源
-
-# Thanks
-
-Thanks he.net](https://he.net) [bgp.tools](https://bgp.tools) [ipinfo.io](https://ipinfo.io) [ip.sb](https://ip.sb) [cheervision.co](https://cheervision.co) [scamalytics.com](https://scamalytics.com) [abuseipdb.com](https://www.abuseipdb.com/) [virustotal.com](https://www.virustotal.com/) [ip2location.com](https://ip2location.com/) [ip-api.com](https://ip-api.com) [ipregistry.co](https://ipregistry.co/) [ipdata.co](https://ipdata.co/) [ipgeolocation.io](https://ipgeolocation.io) [ipwhois.io](https://ipwhois.io) [ipapi.com](https://ipapi.com/) [ipapi.is](https://ipapi.is/) [ipqualityscore.com](https://www.ipqualityscore.com/) [bigdatacloud.com](https://www.bigdatacloud.com/) and so on. They provide APIs for testing, thanks to the query resources provided by various sites on the Internet.
+For relevant reference indicators, see: https://github.com/oneclickvirt/ecs/blob/master/README_NEW_USER.md#IP-Quality-Detection
