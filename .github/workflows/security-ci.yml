@@ -27,7 +27,12 @@ jobs:
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
-          TAG="v0.0.9-$(date +'%Y%m%d%H%M%S')"
+          VERSION=$(sed -n 's/^const SecurityVersion = "\(.*\)"/\1/p' network/version.go)
+          if [ -z "$VERSION" ]; then
+            echo "Failed to read SecurityVersion from network/version.go"
+            exit 1
+          fi
+          TAG="${VERSION}-$(date +'%Y%m%d%H%M%S')"
           echo "TAG=$TAG" >> $GITHUB_ENV
           git tag "$TAG"
           git push origin "$TAG"
