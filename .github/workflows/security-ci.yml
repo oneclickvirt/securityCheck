@@ -5,22 +5,19 @@ on:
 
 jobs:
   test:
-    strategy:
-      matrix:
-        go: ['1.22.x']
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Private Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
         with:
           repository: oneclickvirt/security
           token: ${{ secrets.PUSH_TOKEN }}
 
       - name: Setup Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v6
         with:
-          go-version: ${{ matrix.go }}
+          go-version-file: go.mod
+          check-latest: true
 
       - name: Run Tests
         run: go test ./... -coverprofile=coverage.txt
