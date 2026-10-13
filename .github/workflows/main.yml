@@ -3,6 +3,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+    - name: Load trusted network recovery helpers
+      shell: bash
+      run: |
+        set -euo pipefail
+        curl --fail --silent --show-error --location --connect-timeout 15 --max-time 90 --retry 3 --retry-max-time 180 --retry-connrefused "https://raw.githubusercontent.com/oneclickvirt/securityCheck/main/.github/scripts/ci_network.sh" -o "$RUNNER_TEMP/ci-network.sh"
     - name: Checkout repository
       uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
     - name: Resolve published release
@@ -10,6 +15,7 @@ jobs:
       env:
         RELEASE_TAG: ${{ inputs.release_tag }}
       run: |
+        source "$RUNNER_TEMP/ci-network.sh"
         set -euo pipefail
         tag="$RELEASE_TAG"
         if [[ -z "$tag" ]]; then
@@ -21,6 +27,7 @@ jobs:
         curl -fsS --retry 3 --connect-timeout 10 --max-time 120 \
           "https://api.github.com/repos/oneclickvirt/securityCheck/releases/tags/$tag" > /dev/null
         echo "tag=$tag" >> "$GITHUB_OUTPUT"
+      shell: bash
     - name: Set up QEMU
       uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
       with:

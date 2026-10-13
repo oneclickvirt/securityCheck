@@ -79,13 +79,8 @@ def upload(repository, tag, paths):
     for path in paths:
         if not path.is_file() or path.is_symlink() or path.stat().st_size > 512 * 1024 * 1024:
             raise RuntimeError('unapproved release asset')
-        for asset in api('/repos/' + full + '/releases/' + str(release['id']) + '/assets?per_page=100', credential=credential):
-            if asset['name'] == path.name:
-                api('/repos/' + full + '/releases/assets/' + str(asset['id']), 'DELETE', credential=credential)
-        req = urllib.request.Request('https://uploads.github.com/repos/' + full + '/releases/' + str(release['id']) + '/assets?name=' + path.name,
-            data=path.read_bytes(), method='POST', headers={'Authorization': 'Bearer ' + credential, 'Content-Type': 'application/octet-stream'})
-        with urllib.request.urlopen(req, timeout=120) as response:
-            response.read()
+    from release_assets import Publisher
+    Publisher(full, credential).publish(tag, paths)
     if release['draft']:
         api('/repos/' + full + '/releases/' + str(release['id']), 'PATCH', {'draft': False}, credential=credential)
 
