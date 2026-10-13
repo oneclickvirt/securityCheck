@@ -33,8 +33,16 @@ def commit_private(repository, source, paths):
     quiet(['git', 'add', '--', *paths], cwd=source, env=env)
     if quiet(['git', 'diff', '--cached', '--name-only'], cwd=source, env=env):
         quiet(['git', 'commit', '-q', '-m', 'chore: refresh private registry [skip ci]'], cwd=source, env=env)
-        # Normal push rejects concurrent source writes; never force source history.
-        quiet(['git', 'push', '-q', 'origin', 'HEAD:main'], cwd=source, env=env)
+        # Rebase independent concurrent edits without ever forcing source history.
+        for attempt in range(3):
+            try:
+                quiet(['git', 'push', '-q', 'origin', 'HEAD:main'], cwd=source, env=env)
+                break
+            except RuntimeError:
+                if attempt == 2:
+                    raise
+                quiet(['git', 'fetch', '-q', '--depth=100', 'origin', 'main'], cwd=source, env=env)
+                quiet(['git', 'rebase', '-q', 'FETCH_HEAD'], cwd=source, env=env)
 
 
 def upload(repository, tag, paths):
