@@ -16,6 +16,15 @@ CONFIG = {
     'openspeedtest': ('OpenSpeedTestVersion', 'main.go', '.', 'openspeedtest', 'openspeedtest', ['speedtest_servers.json', 'speedtest_origin_servers.json', 'speedtest_servers_stats.json']),
 }
 
+PLATFORMS = [('linux', 'amd64', ''), ('linux', '386', ''), ('linux', 'arm64', ''), ('linux', 'arm', '7'), ('linux', 'riscv64', ''),
+             ('linux', 'mips', ''), ('linux', 'mipsle', ''), ('linux', 'mips64', ''), ('linux', 'mips64le', ''),
+             ('darwin', 'amd64', ''), ('darwin', 'arm64', ''), ('freebsd', 'amd64', ''), ('freebsd', '386', ''), ('freebsd', 'arm64', ''),
+             ('freebsd', 'arm', '7'), ('windows', 'amd64', ''), ('windows', '386', ''), ('windows', 'arm64', '')]
+
+
+def binary_name(binary, goos, goarch, goarm):
+    return binary + '-' + goos + '-' + ('armv7' if goarm else goarch) + ('.exe' if goos == 'windows' else '')
+
 
 def commit_private(repository, source, paths):
     env = git_env()
@@ -66,6 +75,23 @@ def go_task(repository, task, tag):
     if repository not in CONFIG:
         raise RuntimeError('unknown source repository')
     field, version_path, package, binary, target, changed = CONFIG[repository]
+    if task == 'sync-release':
+        # Poll private tags from the public runner; no private Actions job is needed.
+        tags = api('/repos/oneclickvirt/' + repository + '/tags?per_page=100')
+        versions = [item['name'] for item in tags if re.fullmatch(r'v\d+\.\d+\.\d+', item['name'])]
+        if not versions:
+            return
+        tag = max(versions, key=lambda value: tuple(map(int, value[1:].split('.'))))
+        credential = token() if repository == 'openspeedtest' else os.environ['GITHUB_TOKEN']
+        try:
+            release = api('/repos/oneclickvirt/' + target + '/releases/tags/' + tag, credential=credential)
+            expected = {binary_name(binary, *platform) for platform in PLATFORMS}
+            if not release['draft'] and expected <= {asset['name'] for asset in release['assets']}:
+                return
+        except urllib.error.HTTPError as exc:
+            if exc.code != 404:
+                raise
+        task = 'release'
     source = root() / 'source'
     ref = tag if task == 'release' and tag else 'main'
     if tag and not re.fullmatch(r'v\d+\.\d+\.\d+', tag):
@@ -111,13 +137,8 @@ def go_task(repository, task, tag):
         return
     assets = []
     script = 'mkdir -p /tmp/home\n'
-    for goos, goarch, goarm in [('linux', 'amd64', ''), ('linux', '386', ''), ('linux', 'arm64', ''), ('linux', 'arm', '7'), ('linux', 'riscv64', ''),
-                               ('linux', 'mips', ''), ('linux', 'mipsle', ''), ('linux', 'mips64', ''), ('linux', 'mips64le', ''),
-                               ('darwin', 'amd64', ''), ('darwin', 'arm64', ''), ('freebsd', 'amd64', ''), ('freebsd', '386', ''), ('freebsd', 'arm64', ''),
-                               ('freebsd', 'arm', '7'),
-                               ('windows', 'amd64', ''), ('windows', '386', ''), ('windows', 'arm64', '')]:
-        label = 'armv7' if goarm else goarch
-        name = binary + '-' + goos + '-' + label + ('.exe' if goos == 'windows' else '')
+    for goos, goarch, goarm in PLATFORMS:
+        name = binary_name(binary, goos, goarch, goarm)
         script += f'CGO_ENABLED=0 GOOS={goos} GOARCH={goarch} GOARM={goarm} go build -trimpath -buildvcs=false -ldflags="-s -w" -o /out/{name} {package}\n'
         assets.append(root() / 'out' / name)
     execute(script, cwd=source, container=True)

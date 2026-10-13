@@ -3,6 +3,7 @@ name: Private security tasks
   schedule:
   - cron: 19 * * * *
   - cron: 37 3 * * *
+  - cron: 24 * * * *
   workflow_dispatch:
     inputs:
       task:
@@ -15,6 +16,7 @@ name: Private security tasks
         - build
         - release
         - prepare
+        - sync-release
         default: ci
       release_tag:
         description: Existing private semantic version tag for release
@@ -37,11 +39,11 @@ jobs:
       PRIVATE_CI_TOKEN: ${{ secrets.PRIVATE_CI_TOKEN }}
       CI_JOB_KEY: ${{ github.job }}
       GITHUB_TOKEN: ${{ github.token }}
-      CI_TASK: ${{ github.event.schedule == '19 * * * *' && 'ci' || github.event.schedule == '37 3 * * *' && 'refresh' ||
-        inputs.task || 'ci' }}
+      CI_TASK: ${{ github.event.schedule == '24 * * * *' && 'sync-release' || github.event.schedule == '19 * * *
+        *' && 'ci' || github.event.schedule == '37 3 * * *' && 'refresh' || inputs.task || 'ci' }}
       CI_RELEASE_TAG: ${{ inputs.release_tag }}
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
       with:
         persist-credentials: false
     - name: Run private operation
