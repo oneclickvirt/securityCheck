@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Public launch control; sources, registry updates and diagnostics stay private."""
 import argparse
+import base64
 import json
 import os
 from pathlib import Path
@@ -24,6 +25,24 @@ PLATFORMS = [('linux', 'amd64', ''), ('linux', '386', ''), ('linux', 'arm64', ''
 
 def binary_name(binary, goos, goarch, goarm):
     return binary + '-' + goos + '-' + ('armv7' if goarm else goarch) + ('.exe' if goos == 'windows' else '')
+
+
+def build_platforms(repository):
+    if repository != 'openspeedtest':
+        return PLATFORMS
+    value = api('/repos/oneclickvirt/' + repository + '/contents/.github/ci-platforms.json')
+    config = json.loads(base64.b64decode(value['content']))
+    rows = config.get('platforms')
+    if config.get('version') != 1 or not isinstance(rows, list) or not rows:
+        raise RuntimeError('invalid private platform configuration')
+    platforms = []
+    for row in rows:
+        if not isinstance(row, list) or len(row) != 3 or not all(isinstance(value, str) for value in row) or tuple(row) not in PLATFORMS:
+            raise RuntimeError('unapproved build platform')
+        platforms.append(tuple(row))
+    if len(set(platforms)) != len(platforms):
+        raise RuntimeError('duplicate build platform')
+    return platforms
 
 
 def commit_private(repository, source, paths):
@@ -85,6 +104,7 @@ def go_task(repository, task, tag):
     if repository not in CONFIG:
         raise RuntimeError('unknown source repository')
     field, version_path, package, binary, target, changed = CONFIG[repository]
+    platforms = build_platforms(repository)
     if task == 'sync-release':
         # Poll private tags from the public runner; no private Actions job is needed.
         tags = api('/repos/oneclickvirt/' + repository + '/tags?per_page=100')
@@ -95,7 +115,7 @@ def go_task(repository, task, tag):
         credential = token() if repository == 'openspeedtest' else os.environ['GITHUB_TOKEN']
         try:
             release = api('/repos/oneclickvirt/' + target + '/releases/tags/' + tag, credential=credential)
-            expected = {binary_name(binary, *platform) for platform in PLATFORMS}
+            expected = {binary_name(binary, *platform) for platform in platforms}
             if not release['draft'] and expected <= {asset['name'] for asset in release['assets']}:
                 return
         except urllib.error.HTTPError as exc:
@@ -145,8 +165,9 @@ def go_task(repository, task, tag):
         return
     assets = []
     script = 'mkdir -p /tmp/home\n'
-    for goos, goarch, goarm in PLATFORMS:
+    for goos, goarch, goarm in platforms:
         name = binary_name(binary, goos, goarch, goarm)
+        script += f'printf "Building {goos}/{goarch}\\n"\n'
         script += f'CGO_ENABLED=0 GOOS={goos} GOARCH={goarch} GOARM={goarm} go build -trimpath -buildvcs=false -ldflags="-s -w" -o /out/{name} {package}\n'
         # Eighteen target caches do not fit in the isolated /tmp. Each target
         # retains only its release binary; no source cache leaves the container.
