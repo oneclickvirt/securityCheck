@@ -56,7 +56,7 @@ def upload(repository, tag, paths):
     except urllib.error.HTTPError as exc:
         if exc.code != 404:
             raise
-        release = api('/repos/' + full + '/releases', 'POST', {'tag_name': tag, 'name': tag, 'body': 'Automated binary build.', 'generate_release_notes': False}, credential=credential)
+        release = api('/repos/' + full + '/releases', 'POST', {'tag_name': tag, 'name': tag, 'body': 'Automated binary build.', 'generate_release_notes': False, 'draft': True}, credential=credential)
     for path in paths:
         if not path.is_file() or path.is_symlink() or path.stat().st_size > 512 * 1024 * 1024:
             raise RuntimeError('unapproved release asset')
@@ -67,6 +67,8 @@ def upload(repository, tag, paths):
             data=path.read_bytes(), method='POST', headers={'Authorization': 'Bearer ' + credential, 'Content-Type': 'application/octet-stream'})
         with urllib.request.urlopen(req, timeout=120) as response:
             response.read()
+    if release['draft']:
+        api('/repos/' + full + '/releases/' + str(release['id']), 'PATCH', {'draft': False}, credential=credential)
 
 
 def refresh_script(repository, transfer=False):
