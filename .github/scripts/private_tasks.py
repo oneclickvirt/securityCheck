@@ -76,7 +76,7 @@ def refresh_script(repository, transfer=False):
         return 'python3 parse_servers.py\n'
     if transfer:
         return 'go run ./cmd/update-transfer-registry -output transfer/snapshot/targets.json -manifest transfer/snapshot/manifest.json -allow-stale\n'
-    return 'go run ./cmd/update-registry -source https://paste.spiritlhl.net/speedtest/registry/servers.json -fallback-source .upstream-openspeedtest/speedtest_servers.json -output pst/snapshot/servers.json -manifest pst/snapshot/manifest.json -timeout 90s -allow-stale\n'
+    return 'go run ./cmd/update-registry -source https://paste.spiritlhl.net/speedtest/registry/servers.json -output pst/snapshot/servers.json -manifest pst/snapshot/manifest.json -timeout 90s -allow-stale\n'
 
 
 def go_task(repository, task, tag):
@@ -116,8 +116,6 @@ def go_task(repository, task, tag):
         if days < 0 or days % 3:
             return
     if task in ('refresh', 'refresh-transfer', 'prepare'):
-        if repository == 'privatespeedtest' and task != 'refresh-transfer':
-            clone('oneclickvirt/openspeedtest', source / '.upstream-openspeedtest')
         execute('mkdir -p /tmp/home\n' + refresh_script(repository, task == 'refresh-transfer'), cwd=source, container=True)
     validation = 'mkdir -p /tmp/home\ngo mod verify\ngo test -race -count=1 ./...\ngo vet ./...\n'
     if repository == 'privatespeedtest':
@@ -148,6 +146,9 @@ def go_task(repository, task, tag):
     for goos, goarch, goarm in PLATFORMS:
         name = binary_name(binary, goos, goarch, goarm)
         script += f'CGO_ENABLED=0 GOOS={goos} GOARCH={goarch} GOARM={goarm} go build -trimpath -buildvcs=false -ldflags="-s -w" -o /out/{name} {package}\n'
+        # Eighteen target caches do not fit in the isolated /tmp. Each target
+        # retains only its release binary; no source cache leaves the container.
+        script += 'go clean -cache\n'
         assets.append(root() / 'out' / name)
     execute(script, cwd=source, container=True)
     upload(target, tag or 'output', assets)
