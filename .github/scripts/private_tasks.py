@@ -80,7 +80,7 @@ def upload(repository, tag, paths):
         if not path.is_file() or path.is_symlink() or path.stat().st_size > 512 * 1024 * 1024:
             raise RuntimeError('unapproved release asset')
     from release_assets import Publisher
-    Publisher(full, credential).publish(tag, paths)
+    Publisher(full, credential, release=release).publish(tag, paths)
     if release['draft']:
         api('/repos/' + full + '/releases/' + str(release['id']), 'PATCH', {'draft': False}, credential=credential)
 
