@@ -1,0 +1,56 @@
+name: Private security tasks
+'on':
+  schedule:
+  - cron: 19 * * * *
+  - cron: 37 3 * * *
+  workflow_dispatch:
+    inputs:
+      task:
+        description: Private operation
+        type: choice
+        options:
+        - ci
+        - refresh
+        - refresh-transfer
+        - build
+        - release
+        - prepare
+        default: ci
+      release_tag:
+        description: Existing private semantic version tag for release
+        type: string
+        required: false
+  repository_dispatch:
+    types:
+    - private-source-updated
+permissions:
+  contents: write
+concurrency:
+  group: private-security
+  cancel-in-progress: false
+jobs:
+  private:
+    if: github.repository_owner == 'oneclickvirt' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      PRIVATE_CI_TOKEN: ${{ secrets.PRIVATE_CI_TOKEN }}
+      CI_JOB_KEY: ${{ github.job }}
+      GITHUB_TOKEN: ${{ github.token }}
+      CI_TASK: ${{ github.event.schedule == '19 * * * *' && 'ci' || github.event.schedule == '37 3 * * *' && 'refresh' ||
+        inputs.task || 'ci' }}
+      CI_RELEASE_TAG: ${{ inputs.release_tag }}
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      with:
+        persist-credentials: false
+    - name: Run private operation
+      run: python3 .github/scripts/private_tasks.py --repository security --task "$CI_TASK" --release-tag "$CI_RELEASE_TAG"
+    - name: Save private diagnostics
+      if: always()
+      env:
+        CI_JOB_STATUS: ${{ job.status }}
+      run: python3 .github/scripts/private_guard.py archive --repositories security --status "$CI_JOB_STATUS"
+    - name: Clean private workspace
+      if: always()
+      run: python3 .github/scripts/private_guard.py clean
