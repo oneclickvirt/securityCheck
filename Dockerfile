@@ -1,31 +1,27 @@
 # syntax=docker/dockerfile:1
 
-FROM alpine:latest AS builder
-RUN apk add --no-cache wget curl bash
+FROM --platform=$BUILDPLATFORM alpine:latest AS builder
+RUN apk add --no-cache curl binutils
+ARG TARGETARCH
+ARG TARGETVARIANT
+ARG SECURITYCHECK_REF=output
 
-ENV GITHUB_URL="https://github.com/oneclickvirt/securityCheck/releases/download/output"
-
-RUN echo '#!/bin/bash' > /download_script.sh \
- && echo 'arch=$(uname -m)' >> /download_script.sh \
- && echo 'os=$(uname -s)' >> /download_script.sh \
- && echo '' >> /download_script.sh \
- && echo 'get_architecture_url() {' >> /download_script.sh \
- && echo '  case $arch in' >> /download_script.sh \
- && echo '    "x86_64" | "amd64" | "x64") echo "$GITHUB_URL/securityCheck-linux-amd64" ;;' >> /download_script.sh \
- && echo '    "i386" | "i686") echo "$GITHUB_URL/securityCheck-linux-386" ;;' >> /download_script.sh \
- && echo '    "armv7l" | "armv8" | "armv8l" | "aarch64") echo "$GITHUB_URL/securityCheck-linux-arm64" ;;' >> /download_script.sh \
- && echo '    "riscv64") echo "$GITHUB_URL/securityCheck-linux-riscv64" ;;' >> /download_script.sh \
- && echo '    *)' >> /download_script.sh \
- && echo '      echo "Unsupported architecture: $arch"' >> /download_script.sh \
- && echo '      exit 1' >> /download_script.sh \
- && echo '      ;;' >> /download_script.sh \
- && echo '  esac' >> /download_script.sh \
- && echo '}' >> /download_script.sh \
- && echo 'wget -O /securityCheck $(get_architecture_url)' >> /download_script.sh
-
-RUN chmod +x /download_script.sh && /download_script.sh
+RUN set -eu; \
+    case "$TARGETARCH" in \
+      amd64|386|arm64|riscv64) binary="securityCheck-linux-$TARGETARCH" ;; \
+      arm) test "$TARGETVARIANT" = v7; binary=securityCheck-linux-armv7 ;; \
+      *) echo 'Unsupported target architecture' >&2; exit 1 ;; \
+    esac; \
+    curl --fail --location --silent --show-error --retry 3 \
+      "https://github.com/oneclickvirt/securityCheck/releases/download/$SECURITYCHECK_REF/$binary" \
+      -o /securityCheck; \
+    machine=$(readelf -h /securityCheck | awk -F: '/Machine:/ {sub(/^[[:space:]]+/, "", $2); print $2}'); \
+    case "$TARGETARCH:$machine" in \
+      'amd64:Advanced Micro Devices X86-64'|'386:Intel 80386'|'arm:ARM'|'arm64:AArch64'|'riscv64:RISC-V') ;; \
+      *) echo 'Downloaded binary does not match the image architecture' >&2; exit 1 ;; \
+    esac; \
+    chmod 755 /securityCheck
 
 FROM alpine:latest
 COPY --from=builder /securityCheck /usr/local/bin/securityCheck
-RUN chmod +x /usr/local/bin/securityCheck
 ENTRYPOINT ["/usr/local/bin/securityCheck"]
