@@ -43,7 +43,7 @@ jobs:
         *' && 'ci' || github.event.schedule == '37 3 * * *' && 'refresh' || inputs.task || 'ci' }}
       CI_RELEASE_TAG: ${{ inputs.release_tag }}
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
         persist-credentials: false
     - name: Run private operation
@@ -56,3 +56,5 @@ jobs:
     - name: Clean private workspace
       if: always()
       run: python3 .github/scripts/private_guard.py clean
+env:
+  PYTHONUTF8: '1'

@@ -71,7 +71,7 @@ def upload(repository, tag, paths):
 
 def refresh_script(repository, transfer=False):
     if repository == 'security':
-        return 'go run ./cmd/update-dnsbl-data -allow-stale\n'
+        return 'go run ./cmd/update-dnsbl-data -timeout 5m -allow-stale\n'
     if repository == 'openspeedtest':
         return 'python3 parse_servers.py\n'
     if transfer:
