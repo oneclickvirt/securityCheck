@@ -1,0 +1,19 @@
+{
+  "repository": "oneclickvirt/securityCheck",
+  "branch": "main",
+  "skill_name": "oneclickvirt-securitycheck",
+  "purpose": "Install and interpret the public IP-quality checker release without accessing its private implementation.",
+  "notes": [
+    "Use public oneclickvirt/securityCheck release artifacts only. Do not fetch or publish the private security repository. Verify the installed binary help; network-provider failures are unknown findings, not proof of reputation."
+  ],
+  "guide": "https://www.spiritlhl.net/guide/agent_integrations.html",
+  "releases": false,
+  "mcp": false,
+  "source_files": [
+    "sc_install.sh"
+  ],
+  "purpose_zh": "使用公开 IP 质量检测产物，不访问其私有实现仓库。",
+  "notes_zh": [
+    "仅使用公开 oneclickvirt/securityCheck Release，不拉取或公开私有 security 源码。先核对已安装程序的帮助；上游数据库请求失败应记为未知。"
+  ]
+}

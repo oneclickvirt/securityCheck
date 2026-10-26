@@ -1,0 +1,10 @@
+{
+  "repository": "oneclickvirt/securityCheck",
+  "skill_name": "oneclickvirt-securitycheck",
+  "mcp": false,
+  "files": {
+    "agent/profile.json": "e03ff448228133a1a9ec5573b76d033ba5923745ebd4beaf8605db9c4975c8e4",
+    "skills/oneclickvirt-securitycheck/SKILL.md": "6168cf4b9f3b1091aded247a0b8c5e1b16205a8d22b860b85492b4ea26fe8d8e",
+    "skills/oneclickvirt-securitycheck/SKILL_ZH.md": "f2e0a42bd9d42a173b7085d7626399f2e76e0dfc108d4cda5cb3bb122ef757b3"
+  }
+}
