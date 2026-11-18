@@ -169,6 +169,8 @@ def go_task(repository, task, tag):
         script += 'go clean -cache\n'
         assets.append(root() / 'out' / name)
     execute(script, cwd=source, container=True)
+    if repository == 'security' and (source / '.github/audit_credentials.py').is_file():
+        quiet([sys.executable, str(source / '.github/audit_credentials.py'), *[str(path) for path in assets]], cwd=source)
     upload(target, tag or 'output', assets)
 
 

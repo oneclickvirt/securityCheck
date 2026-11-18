@@ -261,7 +261,7 @@ def execute(script, cwd=None, container=False, shell='bash'):
     if container:
         context = state / 'image'
         context.mkdir(exist_ok=True)
-        (context / 'Dockerfile').write_text('FROM golang:1.26-bookworm\nRUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv dnsutils whois traceroute iputils-ping ca-certificates && rm -rf /var/lib/apt/lists/*\n')
+        (context / 'Dockerfile').write_text('FROM golang:1.27.4-bookworm\nRUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv dnsutils whois traceroute iputils-ping ca-certificates && rm -rf /var/lib/apt/lists/*\n')
         quiet(['docker', 'build', '-q', '-t', 'private-ci-build:local', str(context)], timeout=1200)
         out = state / 'out'
         out.mkdir(exist_ok=True)
